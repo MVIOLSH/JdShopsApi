@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JdShops", "JdShops\JdShops.csproj", "{ADD4D7C5-20B0-40AC-B91D-59C9E52752E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADD4D7C5-20B0-40AC-B91D-59C9E52752E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADD4D7C5-20B0-40AC-B91D-59C9E52752E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADD4D7C5-20B0-40AC-B91D-59C9E52752E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADD4D7C5-20B0-40AC-B91D-59C9E52752E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7BA9EC6-0750-40E2-ADB9-7B69B23B1AD3}
+	EndGlobalSection
+EndGlobal
