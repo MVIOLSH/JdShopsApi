@@ -18,7 +18,8 @@ namespace JdShops.Models
 
         public string DeliveryInfo { get; set; }
 
-        public string MapCoordinates { get; set; }
+        public string MapCoordinatesLongitude { get; set; }
+        public string MapCoordinatesLatitude { get; set; }
 
     }
 }

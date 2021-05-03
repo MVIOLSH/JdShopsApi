@@ -1,4 +1,6 @@
 using JdShops.Entities;
+using JdShops.Middleware;
+using JdShops.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +25,11 @@ namespace JdShops
             services.AddControllers();
             services.AddDbContext<ShopsDBContext>();
             services.AddAutoMapper(this.GetType().Assembly);
-            
+            services.AddScoped<IShopsService, ShopsService>();
+            services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddSwaggerGen();
+            services.AddScoped<RequestTimeMiddleware>();
+            services.AddScoped<IAdditionalAddressService, AdditionalAddressService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,7 +40,12 @@ namespace JdShops
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<RequestTimeMiddleware>();
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "jDShopsAPI"));
 
             app.UseRouting();
 

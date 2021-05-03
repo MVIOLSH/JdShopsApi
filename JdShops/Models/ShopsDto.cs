@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace JdShops.Models
     public class ShopsDto
     {
         public int Id { get; set; }
+        [Required]
         public float ShopNumber { get; set; }
 
         public string Facia { get; set; }
@@ -18,6 +20,7 @@ namespace JdShops.Models
 
         public string DeliveryInfo { get; set; }
 
-        public string MapCoordinates { get; set; }
+        public string MapCoordinatesLongitude { get; set; }
+        public string MapCoordinatesLatitude { get; set; }
     }
 }

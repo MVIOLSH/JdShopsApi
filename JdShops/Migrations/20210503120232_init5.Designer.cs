@@ -3,14 +3,16 @@ using JdShops.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JdShops.Migrations
 {
     [DbContext(typeof(ShopsDBContext))]
-    partial class ShopsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210503120232_init5")]
+    partial class init5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,13 +30,7 @@ namespace JdShops.Migrations
                     b.Property<string>("DeliveryInfo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapCoordinatesLatitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapCoordinatesLongitude")
+                    b.Property<string>("MapCoordinates")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("ShopNumber")
@@ -55,10 +51,7 @@ namespace JdShops.Migrations
                     b.Property<string>("DeliveryInfo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MapCoordinatesLatitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapCoordinatesLongitude")
+                    b.Property<string>("MapCoordinates")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("ShopNumber")

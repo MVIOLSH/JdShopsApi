@@ -3,47 +3,22 @@ using JdShops.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JdShops.Migrations
 {
     [DbContext(typeof(ShopsDBContext))]
-    partial class ShopsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210502200443_init4")]
+    partial class init4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("JdShops.Entities.AdditionalAddress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DeliveryInfo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapCoordinatesLatitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapCoordinatesLongitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("ShopNumber")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AdditionalAddresses");
-                });
 
             modelBuilder.Entity("JdShops.Entities.Address", b =>
                 {
@@ -55,10 +30,7 @@ namespace JdShops.Migrations
                     b.Property<string>("DeliveryInfo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MapCoordinatesLatitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapCoordinatesLongitude")
+                    b.Property<string>("MapCoordinates")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("ShopNumber")
