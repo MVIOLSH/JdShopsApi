@@ -1,11 +1,19 @@
+using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using JdShops.Entities;
 using JdShops.Middleware;
+using JdShops.Models;
+using JdShops.Models.Validators;
 using JdShops.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JdShops
 {
@@ -21,40 +29,75 @@ namespace JdShops
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
+            var authenticationSettings = new AuthenticationSettings();
+            
+            Configuration.GetSection("Authentication").Bind(authenticationSettings);
+            services.AddSingleton(authenticationSettings);
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "Bearer";
+                option.DefaultScheme = "Bearer";
+                option.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = authenticationSettings.JwtIssuer,
+                    ValidAudience = authenticationSettings.JwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+                };
+            });
+            services.AddControllers().AddFluentValidation();
             services.AddDbContext<ShopsDBContext>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserContextService, UserContextService>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IShopsService, ShopsService>();
+            services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<ErrorHandlingMiddleware>();
-            services.AddSwaggerGen();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddScoped<IAdditionalAddressService, AdditionalAddressService>();
+            services.AddScoped<Seeder>();
+            services.AddScoped<IAccountService,AccountService>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            services.AddSwaggerGen();
+            services.AddScoped<IImageUploadService, ImageUploadService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seeder seeder)
         {
+            seeder.Seed();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMiddleware<RequestTimeMiddleware>();
+            app.UseAuthentication();
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
-
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "jDShopsAPI"));
-
             app.UseRouting();
-
-            //app.UseAuthorization();
-
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Could Not find anything");
+
+            } );
         }
     }
 }

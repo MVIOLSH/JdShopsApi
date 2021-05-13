@@ -4,9 +4,12 @@ using JdShops.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using JdShops.Exceptions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NLog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -16,7 +19,7 @@ namespace JdShops.Services
     public interface IShopsService
     {
         ShopsDto GetById(int id);
-        IEnumerable<ShopsDto> GetAll();
+        IEnumerable<ShopsDto> GetAll(string searchPhrase);
         float Create(CreateShopDto dto);
         void ShopDelete(int id);
         void ShopUpdate(int id, UpdateShopDto dto);
@@ -27,13 +30,17 @@ namespace JdShops.Services
         private readonly ShopsDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IWebHostEnvironment _environment;
+        private readonly IImageUploadService _image;
 
 
-        public ShopsService(ShopsDBContext dbContext, IMapper mapper, ILogger<ShopsService> logger)
+        public ShopsService(ShopsDBContext dbContext, IMapper mapper, ILogger<ShopsService> logger, IWebHostEnvironment environment, IImageUploadService image)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
+            _environment = environment;
+            _image = image;
 
         }
         /** Method to update shop details record in both tables of DB */
@@ -105,11 +112,13 @@ namespace JdShops.Services
             return result;
         }
         /** Method to list all the shops details records from both tables of DB */
-        public IEnumerable<ShopsDto> GetAll()
+        public IEnumerable<ShopsDto> GetAll(string searchPhrase)
         {
             var shops = _dbContext
                     .Shops
                     .Include(r => r.Address)
+                    .Where(r=> searchPhrase == null || (r.Facia.ToLower() == searchPhrase.ToLower() 
+                              || r.Town.ToLower() == searchPhrase.ToLower()))
                     .ToList();
 
             var shopsDtos = _mapper.Map<List<ShopsDto>>(shops);
@@ -123,6 +132,7 @@ namespace JdShops.Services
             _dbContext.Shops.Add(shop);
             _dbContext.SaveChanges();
             _logger.LogWarning($"Shop with Shop Number: {dto.ShopNumber} Create action finished with success by");
+            
             return shop.ShopNumber;
         }
     }

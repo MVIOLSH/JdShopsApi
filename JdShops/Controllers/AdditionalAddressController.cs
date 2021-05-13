@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using JdShops.Models;
 using JdShops.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JdShops.Controllers
 {
     [Route("api/shops/{shopNumber}/additional")]
     [ApiController]
+    [Authorize]
 
     public class AdditionalAddressController : ControllerBase
     {
@@ -21,6 +23,8 @@ namespace JdShops.Controllers
             _addressService = addressService;
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "AdvancedUser")]
         public ActionResult Post([FromRoute] int shopNumber,[FromBody] AddAdditionalAddressDto dto)
         {
             var newAddress =  _addressService.Create(shopNumber, dto);
@@ -43,6 +47,8 @@ namespace JdShops.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "AdvancedUser")]
         public ActionResult Delete([FromRoute] int shopNumber, [FromRoute] int id)
         {
             _addressService.AdditionalAddressDelete(id, shopNumber);
@@ -51,6 +57,8 @@ namespace JdShops.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "AdvancedUser")]
         public ActionResult Update([FromRoute] int shopNumber, [FromRoute] int id, [FromBody] AddAdditionalAddressDto dto)
         {
             _addressService.AdditionalAddressUpdate(shopNumber, id, dto);
