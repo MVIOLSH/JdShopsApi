@@ -7,12 +7,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using JdShops.Models;
 using JdShops.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 
 namespace JdShops.Controllers
 {
-    [Route("api/Images")]
+    [Route("api/images")]
+    [Authorize]
     [ApiController]
+
     public class ImageUploadController : ControllerBase
     {
         public static IWebHostEnvironment _environment;
@@ -23,12 +26,15 @@ namespace JdShops.Controllers
             _environment = environment;
             _imageUploadService = imageUploadService;
         }
-
+        [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
         [HttpPost("{id}")]
-        public ActionResult<Task<string>> Post([FromRoute] string id, [FromForm]Image objFile)
+        public ActionResult Post([FromRoute] string id, [FromForm]IFormFile file)
         {
-            _imageUploadService.Post(objFile, id);
-            return Ok(objFile);
+            _imageUploadService.PostImageToShop(file, id);
+            return Ok();
         }
+
+        
     }
+
 }

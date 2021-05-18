@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -50,7 +51,8 @@ namespace JdShops
                 };
             });
             services.AddControllers().AddFluentValidation();
-            services.AddDbContext<ShopsDBContext>();
+            services.AddDbContext<ShopsDBContext>
+                (options => options.UseSqlServer(Configuration.GetConnectionString("JdDbConnection")));
             services.AddHttpContextAccessor();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddAutoMapper(this.GetType().Assembly);
@@ -65,11 +67,19 @@ namespace JdShops
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddSwaggerGen();
             services.AddScoped<IImageUploadService, ImageUploadService>();
+            services.AddCors(options =>
+                options.AddPolicy("FrontEndClient", builder => 
+                    builder.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seeder seeder)
         {
+            app.UseResponseCaching();
+            app.UseStaticFiles();
+            app.UseCors("FrontEndClient");
             seeder.Seed();
             if (env.IsDevelopment())
             {

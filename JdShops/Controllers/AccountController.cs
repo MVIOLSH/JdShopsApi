@@ -37,7 +37,7 @@ namespace JdShops.Controllers
 
         [HttpPut("update/{id}")]
         [Authorize(Roles = "Admin, AdvancedUser")]
-        public ActionResult UpdateUser([FromBody] RegisterUserDto dto, int  id)
+        public ActionResult UpdateUser([FromBody] UpdateUserDto dto, int  id)
         {
             _accountService.UpdateUser(dto, id);
             return Ok("User Updated Successfully");

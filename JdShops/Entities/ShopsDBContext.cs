@@ -8,8 +8,10 @@ namespace JdShops.Entities
 {
     public class ShopsDBContext : DbContext
     {
-        private string _connectionString = 
-            "Server=(localdb)\\mssqllocaldb;Database=JDSopsDbNew;Trusted_Connection=True;";
+        public ShopsDBContext(DbContextOptions<ShopsDBContext> options) : base(options)
+        {
+                
+        }
         public DbSet<Shops> Shops { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<AdditionalAddress> AdditionalAddresses { get; set; }
@@ -43,10 +45,6 @@ namespace JdShops.Entities
 
 
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
-
+      
     }
 }

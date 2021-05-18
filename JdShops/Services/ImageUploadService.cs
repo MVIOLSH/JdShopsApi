@@ -6,12 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using JdShops.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace JdShops.Services
 {
     public interface IImageUploadService
     {
-        Task<string> Post(Image objFileImage, string shopNumber);
+        bool PostImageToShop(IFormFile file, string shopNumber);
     }
 
     public class ImageUploadService : IImageUploadService
@@ -23,27 +26,32 @@ namespace JdShops.Services
             _environment = environment;
         }
 
-        public async Task<string> Post(Image objFileImage, string shopNumber)
+        public bool PostImageToShop(IFormFile file, string shopNumber)
         {
             try
             {
-                if (objFileImage.files.Length > 0)
+                var rootPath = _environment.WebRootPath;
+                var fileName = file.FileName;
+                var fullPath = $"{rootPath}/MEDIA/{shopNumber}/{fileName}";
+                var dirPath = $"{rootPath}/MEDIA/{shopNumber}/";
+
+                if (file.Length > 0)
                 {
-                    if (!Directory.Exists((_environment.WebRootPath + $"\\MEDIA\\{shopNumber}")))
+                    if (!Directory.Exists(dirPath))
                     {
-                        Directory.CreateDirectory(_environment.WebRootPath + "\\MEDIA\\" + shopNumber);
+                        Directory.CreateDirectory(dirPath);
                     }
 
-                    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + $"\\MEDIA\\{shopNumber}\\" + objFileImage.files.FileName))
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
-                        objFileImage.files.CopyTo(fileStream);
-                        fileStream.Flush();
-                        return $"\\MEDIA\\{shopNumber}\\" + objFileImage.files.FileName;
+                        file.CopyTo(stream);
+
+                        return true;
                     }
                 }
                 else
                 {
-                    return "Failed";
+                    return false ;
                 }
             }
             catch (Exception ex)
@@ -51,7 +59,7 @@ namespace JdShops.Services
                 ex.Message.ToString();
             }
 
-            return null;
+            return true;
         }
     }
 }

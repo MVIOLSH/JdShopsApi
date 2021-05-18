@@ -19,7 +19,7 @@ namespace JdShops.Services
     {
         void RegisterUser(RegisterUserDto dto);
         string GenerateJwt(LoginDto dto);
-        void UpdateUser(RegisterUserDto dto, int id);
+        void UpdateUser(UpdateUserDto dto, int id);
         IEnumerable<User> GetAllUsers(string searchPhrase);
         void DeleteUser(int id);
     }
@@ -102,7 +102,7 @@ namespace JdShops.Services
                 return tokenHandler.WriteToken(token);
             }
 
-        public void UpdateUser(RegisterUserDto dto, int id)
+        public void UpdateUser(UpdateUserDto dto, int id)
         {
             var user = _dbContext
                 .Users
@@ -114,7 +114,6 @@ namespace JdShops.Services
               throw new NotFoundException("User Not Found!");
             }
            
-            user.Email = dto.Email;
             user.Fname = dto.Fname;
             user.Lname = dto.Lname;
             user.RoleId = dto.RoleId;

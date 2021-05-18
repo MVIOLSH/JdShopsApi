@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.Configuration;
 using JdShops.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace JdShops
 {
@@ -21,6 +22,11 @@ namespace JdShops
         {
             if (_dbContext.Database.CanConnect())
             {
+                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
+                if (pendingMigrations != null && pendingMigrations.Any())
+                {
+                    _dbContext.Database.Migrate();
+                }
                 if (!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
@@ -56,8 +62,8 @@ namespace JdShops
             var users = new List<User>()
             {
 
-                new User() {Email = "mviolsh@gmail.com", Fname = "Michal", Lname = "Szymanski", PasswordHash = "Lokolo@12", RoleId = 4, IsValidated = true},
-                new User() {Email = "test@test.co.uk", Fname = "Temporary", Lname = "User", PasswordHash = "p&hdrivers", RoleId = 1, IsValidated = true}
+                new User() {Email = "mviolsh@gmail.com", Fname = "Michal", Lname = "Szymanski", PasswordHash = "", RoleId = 4, IsValidated = true},
+                new User() {Email = "test@test.co.uk", Fname = "Temporary", Lname = "User", PasswordHash = "", RoleId = 1, IsValidated = true}
             };
 
             return users;
