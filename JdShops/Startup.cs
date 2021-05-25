@@ -61,6 +61,7 @@ namespace JdShops
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddScoped<IAdditionalAddressService, AdditionalAddressService>();
+            services.AddScoped<IAnnouncementsService, AnnouncementsService>();
             services.AddScoped<Seeder>();
             services.AddScoped<IAccountService,AccountService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

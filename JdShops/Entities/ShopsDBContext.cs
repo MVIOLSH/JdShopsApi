@@ -18,6 +18,7 @@ namespace JdShops.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
+        public  DbSet<Announcements> Announcements { get; set; }
 
 
 
