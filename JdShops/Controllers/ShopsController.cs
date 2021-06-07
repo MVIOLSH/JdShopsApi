@@ -59,7 +59,7 @@ namespace JdShops.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser, DummyUser")]
-        public ActionResult<ShopsDto> Get([FromRoute] int id)
+        public ActionResult<IEnumerable<ShopsDto>> Get([FromRoute] int id)
         {
             var shop = _shopsService.GetById(id);
             return Ok(shop);

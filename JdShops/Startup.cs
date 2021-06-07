@@ -51,8 +51,8 @@ namespace JdShops
                 };
             });
             services.AddControllers().AddFluentValidation();
-            services.AddDbContext<ShopsDBContext>
-                (options => options.UseSqlServer(Configuration.GetConnectionString("JdDbConnection")));
+           services.AddDbContext<ShopsDBContext>
+               (options => options.UseSqlServer(Configuration.GetConnectionString("JdDbConnection")));
             services.AddHttpContextAccessor();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddAutoMapper(this.GetType().Assembly);
@@ -67,7 +67,6 @@ namespace JdShops
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddSwaggerGen();
-            services.AddScoped<IImageUploadService, ImageUploadService>();
             services.AddCors(options =>
                 options.AddPolicy("FrontEndClient", builder => 
                     builder.AllowAnyMethod()

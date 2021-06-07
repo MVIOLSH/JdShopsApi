@@ -35,7 +35,7 @@ namespace JdShops.Controllers
             return Ok(token);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPatch("update/{id}")]
         [Authorize(Roles = "Admin, AdvancedUser")]
         public ActionResult UpdateUser([FromBody] UpdateUserDto dto, int  id)
         {
@@ -43,11 +43,27 @@ namespace JdShops.Controllers
             return Ok("User Updated Successfully");
         }
 
+        [HttpPatch("resetPass/{id}")]
+        [Authorize(Roles = "Admin, AdvancedUser")]
+        public ActionResult ResetUserPassword([FromBody] UpdateUserDto dto , int id)
+        {
+            _accountService.PasswordReset(dto, id);
+            return Ok("User Password Changed Successfully");
+        }
+
         [HttpGet("users")]
         [Authorize(Roles = "Admin, AdvancedUser")]
         public ActionResult GetAllUsers([FromQuery] string searchPhrase)
         {
             var users =_accountService.GetAllUsers(searchPhrase);
+            return Ok(users);
+        }
+
+        [HttpGet("users/{Id}")]
+        [Authorize(Roles = "Admin, AdvancedUser")]
+        public ActionResult GetUserById([FromRoute] int Id)
+        {
+            var users = _accountService.GetUserbyId(Id);
             return Ok(users);
         }
 

@@ -14,7 +14,7 @@ namespace JdShops.Entities
         public string Fname { get; set; }
         public string Lname { get; set; }
         public string PasswordHash { get; set; }
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
         public virtual Role Role { get; set; }
         public bool IsValidated { get; set; }
 

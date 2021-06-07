@@ -10,16 +10,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JdShops.Controllers
 {
-    public class AnnouncementsController
-    {
+    
         [Route("api/announcements")]
         [ApiController]
         [Authorize]
         public class AnnouncementsController : ControllerBase
         {
-            private readonly AnnouncementsService.IAnnouncementsService _announcementsService;
+            private readonly IAnnouncementsService _announcementsService;
 
-            public AnnouncementsController(AnnouncementsService.IAnnouncementsService announcementsService)
+            public AnnouncementsController(IAnnouncementsService announcementsService)
             {
                 _announcementsService = announcementsService;
             }
@@ -67,4 +66,4 @@ namespace JdShops.Controllers
 
         }
     }
-}
+

@@ -28,16 +28,15 @@ namespace JdShops.Services
             private readonly IMapper _mapper;
             private readonly ILogger _logger;
             private readonly IWebHostEnvironment _environment;
-            private readonly IImageUploadService _image;
+        
 
-
-            public AnnouncementsService(ShopsDBContext dbContext, IMapper mapper, ILogger<Services.ShopsService> logger, IWebHostEnvironment environment, IImageUploadService image)
+            public AnnouncementsService(ShopsDBContext dbContext, IMapper mapper, ILogger<Services.ShopsService> logger, IWebHostEnvironment environment)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
                 _logger = logger;
                 _environment = environment;
-                _image = image;
+               
 
             }
             /** Method to update shop details record in both tables of DB */

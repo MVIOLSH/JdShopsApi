@@ -20,8 +20,10 @@ namespace JdShops.Services
         void RegisterUser(RegisterUserDto dto);
         string GenerateJwt(LoginDto dto);
         void UpdateUser(UpdateUserDto dto, int id);
-        IEnumerable<User> GetAllUsers(string searchPhrase);
+        IEnumerable<UserDto> GetAllUsers(string searchPhrase);
+        IEnumerable<UserDto> GetUserbyId(int Id);
         void DeleteUser(int id);
+        void PasswordReset(UpdateUserDto dto, int id);
     }
 
     public class AccountService : IAccountService
@@ -113,11 +115,26 @@ namespace JdShops.Services
             {
               throw new NotFoundException("User Not Found!");
             }
-           
-            user.Fname = dto.Fname;
-            user.Lname = dto.Lname;
-            user.RoleId = dto.RoleId;
-            user.IsValidated = dto.IsValidated;
+
+            if (dto.Fname != null) { user.Fname = dto.Fname;}
+            if (dto.Lname != null) { user.Lname = dto.Lname;}
+            if (dto.RoleId != null || dto.RoleId !=user.RoleId ) { user.RoleId = dto.RoleId;}
+            if (dto.IsValidated != user.IsValidated) { user.IsValidated = dto.IsValidated;}
+                      
+
+            _dbContext.SaveChanges();
+        }
+
+        public void PasswordReset(UpdateUserDto dto, int id) 
+        {var user = _dbContext
+                .Users
+                .FirstOrDefault(r => r.Id == id);
+
+            if (user is null)
+            {
+                throw new NotFoundException("User Not Found!");
+            }
+
             if (dto.PasswordHash == null)
             {
                 user.PasswordHash = user.PasswordHash;
@@ -127,23 +144,36 @@ namespace JdShops.Services
                 var hashedPassword = _passwordHasher.HashPassword(user, dto.PasswordHash);
                 user.PasswordHash = hashedPassword;
             }
-            
 
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<User> GetAllUsers(string searchPhrase)
+
+        public IEnumerable<UserDto> GetAllUsers(string searchPhrase)
         {
-            var Users = _dbContext.Users
+            var users = _dbContext.Users
                 .Include(u => u.Role)
                 .Where(r=> searchPhrase == null 
                            ||(r.Email.ToLower() ==searchPhrase.ToLower()
                            || r.Fname.ToLower() == searchPhrase.ToLower()
                            || r.Lname.ToLower() == searchPhrase.ToLower()))
                 .ToList();
+            var UsersDto = _mapper.Map<List<UserDto>>(users);
             
-            return Users;
+            return UsersDto;
         }
+
+        public IEnumerable<UserDto> GetUserbyId(int Id)
+        {
+            var users = _dbContext.Users
+                .Include(u => u.Role)
+                .Where(r => r.Id == Id)
+                .ToList();
+            var UsersDto = _mapper.Map<List<UserDto>>(users);
+
+            return UsersDto;
+        }
+
 
         public void DeleteUser(int id)
         {

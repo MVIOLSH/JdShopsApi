@@ -18,7 +18,12 @@ namespace JdShops.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
-        public  DbSet<Announcements> Announcements { get; set; }
+        public  DbSet<ImgShop> ImgShop { get; set; }
+        public DbSet<ImgAdditionalAddress> ImgAdditionalAddresses { get; set; }
+        public DbSet<ImgTickets> ImgTickets { get; set; }
+        public DbSet<File> File { get; set; }
+        public DbSet<Announcements> Announcements { get; set; }
+
 
 
 
@@ -43,7 +48,21 @@ namespace JdShops.Entities
             modelBuilder.Entity<Role>()
                 .Property(r => r.Name)
                 .IsRequired();
-
+            modelBuilder.Entity<Announcements>()
+                .Property(r => r.Id)
+                .IsRequired();
+            modelBuilder.Entity<ImgShop>()
+                .Property(r => r.Id)
+                .IsRequired();
+            modelBuilder.Entity<ImgAdditionalAddress>()
+                .Property(r => r.Id)
+                .IsRequired();
+            modelBuilder.Entity<ImgTickets>()
+                .Property(r => r.Id)
+                .IsRequired();
+            modelBuilder.Entity<File>()
+                .Property(r => r.Id)
+                .IsRequired();
 
         }
       

@@ -65,6 +65,42 @@ namespace JdShops
                 .ForMember(m => m.CreatedByUser, c => c.MapFrom(s => s.CreatedByUser))
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.UserId))
                 ;
+            CreateMap<AnnouncementsDto, Announcements>()
+                .ForMember(m => m.Title, c => c.MapFrom(s => s.Title))
+                .ForMember(m => m.Content, c => c.MapFrom(s => s.Content))
+                .ForMember(m => m.DateCreated, c => c.MapFrom(s => s.DateCreated))
+                .ForMember(m => m.IsPublished, c => c.MapFrom(s => s.IsPublished))
+                .ForMember(m => m.IsDeleted, c => c.MapFrom(s => s.IsDeleted))
+                .ForMember(m => m.Type, c => c.MapFrom(s => s.Type));
+            CreateMap<Announcements, AnnouncementsDto>()
+                .ForMember(m => m.Title, c => c.MapFrom(s => s.Title))
+                .ForMember(m => m.Content, c => c.MapFrom(s => s.Content))
+                .ForMember(m => m.DateCreated, c => c.MapFrom(s => s.DateCreated))
+                .ForMember(m => m.IsPublished, c => c.MapFrom(s => s.IsPublished))
+                .ForMember(m => m.IsDeleted, c => c.MapFrom(s => s.IsDeleted))
+                .ForMember(m => m.Type, c => c.MapFrom(s => s.Type));
+            
+            CreateMap<UserDto, User>()
+                .ForMember(m => m.Id, c => c.MapFrom(s => s.Id))
+                .ForMember(m => m.Email, c => c.MapFrom(s => s.Email))
+                .ForMember(m => m.Fname, c => c.MapFrom(s => s.Fname))
+                .ForMember(m => m.Lname, c => c.MapFrom(s => s.Lname))
+                .ForMember(m => m.RoleId, c => c.MapFrom(s => s.RoleId))
+                .ForMember(m => m.Role, c => c.MapFrom(s => s.Role))
+                .ForMember(m => m.PasswordHash, c => c.MapFrom(s => s.PasswordHash))
+                .ForMember(m => m.IsValidated, c => c.MapFrom(s => s.IsValidated))
+                ;
+
+            CreateMap<User, UserDto>()
+                .ForMember(m => m.Id, c => c.MapFrom(s => s.Id))
+                .ForMember(m => m.Email, c => c.MapFrom(s => s.Email))
+                .ForMember(m => m.Fname, c => c.MapFrom(s => s.Fname))
+                .ForMember(m => m.Lname, c => c.MapFrom(s => s.Lname))
+                .ForMember(m => m.RoleId, c => c.MapFrom(s => s.RoleId))
+                .ForMember(m => m.Role, c => c.MapFrom(s => s.Role.Name))
+                .ForMember(m => m.PasswordHash, c => c.MapFrom(s => s.PasswordHash))
+                .ForMember(m => m.IsValidated, c => c.MapFrom(s => s.IsValidated))
+                ;
 
         }
 

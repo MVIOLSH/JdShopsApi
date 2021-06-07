@@ -23,8 +23,8 @@ namespace JdShops.Controllers
             _addressService = addressService;
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "AdvancedUser")]
+        [Authorize(Roles = "Admin, AdvancedUser")]
+       
         public ActionResult Post([FromRoute] int shopNumber,[FromBody] AddAdditionalAddressDto dto)
         {
             var newAddress =  _addressService.Create(shopNumber, dto);
@@ -47,8 +47,8 @@ namespace JdShops.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "AdvancedUser")]
+        [Authorize(Roles = "Admin, AdvancedUser")]
+        
         public ActionResult Delete([FromRoute] int shopNumber, [FromRoute] int id)
         {
             _addressService.AdditionalAddressDelete(id, shopNumber);
@@ -57,8 +57,8 @@ namespace JdShops.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "AdvancedUser")]
+        [Authorize(Roles = "Admin, AdvancedUser")]
+        
         public ActionResult Update([FromRoute] int shopNumber, [FromRoute] int id, [FromBody] AddAdditionalAddressDto dto)
         {
             _addressService.AdditionalAddressUpdate(shopNumber, id, dto);

@@ -18,7 +18,7 @@ namespace JdShops.Services
 {
     public interface IShopsService
     {
-        ShopsDto GetById(int id);
+        IEnumerable<ShopsDto> GetById(int id);
         IEnumerable<ShopsDto> GetAll(string searchPhrase);
         float Create(CreateShopDto dto);
         void ShopDelete(int id);
@@ -31,16 +31,15 @@ namespace JdShops.Services
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly IWebHostEnvironment _environment;
-        private readonly IImageUploadService _image;
+        
 
 
-        public ShopsService(ShopsDBContext dbContext, IMapper mapper, ILogger<ShopsService> logger, IWebHostEnvironment environment, IImageUploadService image)
+        public ShopsService(ShopsDBContext dbContext, IMapper mapper, ILogger<ShopsService> logger, IWebHostEnvironment environment)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
-            _environment = environment;
-            _image = image;
+            _environment = environment;           
 
         }
         /** Method to update shop details record in both tables of DB */
@@ -100,15 +99,15 @@ namespace JdShops.Services
            
         }
         /** Method to list specified by shop number shop details records from both tables of DB */
-        public ShopsDto GetById(int id) 
+        public IEnumerable<ShopsDto> GetById(int id) 
         {
-            var shop = _dbContext
+            var shops = _dbContext
              .Shops
              .Include(r => r.Address)
-             .FirstOrDefault(r => r.ShopNumber == id);
+             .Where(r => r.ShopNumber == id).ToList();
 
-            if (shop is null) throw new NotFoundException("Shop Not Found!");
-            var result = _mapper.Map<ShopsDto>(shop);
+            if (shops is null) throw new NotFoundException("Shop Not Found!");
+            var result = _mapper.Map<List<ShopsDto>>(shops);
             return result;
         }
         /** Method to list all the shops details records from both tables of DB */

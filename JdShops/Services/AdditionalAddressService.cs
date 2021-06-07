@@ -52,7 +52,7 @@ namespace JdShops.Services
 
             var additionalAddresses = _dbContext
                 .AdditionalAddresses
-                .Where(r=>r.ShopNumber == shopNumber)
+                .Where(r=>r.ShopNumber == shop.ShopNumber)
                 .ToList();
           
 

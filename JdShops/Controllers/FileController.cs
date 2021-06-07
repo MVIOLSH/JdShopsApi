@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
+using JdShops.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +19,12 @@ namespace JdShops.Controllers
     public class FileController : ControllerBase
     {
         public static IWebHostEnvironment _environment;
+        private readonly ShopsDBContext _dbContext;
 
-        public FileController(IWebHostEnvironment environment)
+        public FileController(IWebHostEnvironment environment, ShopsDBContext dbContext)
         {
             _environment = environment;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
@@ -28,7 +32,7 @@ namespace JdShops.Controllers
         [ResponseCache(Duration = 1200, VaryByQueryKeys = new []{"fileName"})]
         public ActionResult GetFile([FromQuery] string fileName)
         {
-            var rootPath = _environment.WebRootPath;
+            var rootPath = Directory.GetCurrentDirectory();
             var filePath = $"{rootPath}/FILES/{fileName}";
             var fileExist = System.IO.File.Exists(filePath);
 
@@ -51,9 +55,22 @@ namespace JdShops.Controllers
         {
             if (file != null && file.Length > 0)
             {
-                var rootPath = _environment.WebRootPath;
+                var rootPath = Directory.GetCurrentDirectory();
                 var fileName = file.FileName;
                 var fullPath = $"{rootPath}/FILES/{fileName}";
+
+                var fileDbEntry = new Entities.File()
+                {
+                    Id = 0,
+                    FileName = fileName,
+                    FileType = "Document",
+                    FilePath = fullPath,
+                    Description = "test"
+                };
+
+                _dbContext.File.Add(fileDbEntry);
+                _dbContext.SaveChanges();
+                
 
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
