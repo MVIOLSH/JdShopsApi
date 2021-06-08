@@ -12,6 +12,7 @@ namespace JdShops.Entities
         public string FileName { get; set; }
         public string FilePath { get; set; }
         public string Description { get; set; }
+        public int TicketId { get; set; }
     }
 }
 

@@ -30,7 +30,8 @@ namespace JdShops.Controllers
 
         }
 
-
+        //Shop Image Controller Methods
+        #region
         [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
         [HttpPost("{id}")]
         public ActionResult PostImageToShop([FromRoute] string id, [FromForm] IFormFile file, [FromForm] string description)
@@ -97,7 +98,7 @@ namespace JdShops.Controllers
             return Ok(list);
         }
 
-        //[Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
+        
         [AllowAnonymous]
         [HttpGet("{shopNumber}/{fileName}")]
         public ActionResult GetImage([FromRoute] string shopNumber, string fileName)
@@ -128,17 +129,22 @@ namespace JdShops.Controllers
 
             foreach (var item in file)
             {
-                System.IO.File.Delete(item.FilePath);
                 if (!System.IO.File.Exists(item.FilePath))
                 {
-                    _dbContext.Remove(item);
-                    _dbContext.SaveChanges();
+                    return BadRequest();
                 }
-            }
+                System.IO.File.Delete(item.FilePath);
+                _dbContext.Remove(item);
+                _dbContext.SaveChanges();
+            }         
 
             return Ok();
         }
 
+        #endregion
+
+        #region
+        //Additional Address Image Controller Methods
         [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
         [HttpPost("additional/{id}")]
         public ActionResult PostImageAddress([FromRoute] string id, [FromForm] IFormFile file, [FromForm] string description)
@@ -199,7 +205,7 @@ namespace JdShops.Controllers
         [HttpGet("additional/{shopNumber}")]
         public ActionResult<List<ImgShop>> GetListOfImagesAdditionalAddress([FromRoute] string shopNumber)
         {
-            var list = _dbContext.ImgShop.Where(c => c.ShopNumber == shopNumber).ToList();
+            var list = _dbContext.ImgAdditionalAddresses.Where(c => c.ShopNumber == shopNumber).ToList();
 
             return Ok(list);
         }
@@ -211,7 +217,7 @@ namespace JdShops.Controllers
         {
 
             var rootPath = Directory.GetCurrentDirectory();
-            var filePath = $"{rootPath}/MEDIA/{shopNumber}/{fileName}";
+            var filePath = $"{rootPath}/MEDIA/additional/{shopNumber}/{fileName}";
             var fileExist = System.IO.File.Exists(filePath);
 
             if (!fileExist)
@@ -225,6 +231,141 @@ namespace JdShops.Controllers
             var fileContent = System.IO.File.ReadAllBytes(filePath);
             return File(fileContent, fileTypeResult, fileName);
         }
+
+        [Authorize(Roles = "Admin, AdvancedUser")]
+        [HttpDelete("/additional/{id}")]
+        public ActionResult<List<ImgShop>> DeleteImageAdditionalAddress([FromRoute] string id)
+        {
+            var idInt = int.Parse(id);
+            var file = _dbContext.ImgAdditionalAddresses.Where(c => c.Id == idInt).ToList();
+
+            foreach (var item in file)
+            {
+                if (!System.IO.File.Exists(item.FilePath))
+                {
+                    return BadRequest();
+                }
+                System.IO.File.Delete(item.FilePath);
+                _dbContext.Remove(item);
+                _dbContext.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+        #endregion
+
+        #region
+        //Tickets Image Controller Methods
+        [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
+        [HttpPost("ticket/{id}")]
+        public ActionResult PostImageTicket([FromRoute] string id, [FromForm] IFormFile file, [FromForm] string description)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var rootPath = Directory.GetCurrentDirectory();
+                var fileName = file.FileName;
+                var fullPath = $"{rootPath}/MEDIA/ticket/{id}/{fileName}";
+                var dirPath = $"{rootPath}/MEDIA/ticket/{id}/";
+
+                if (file != null && file.Length > 0)
+                {
+                    if (!Directory.Exists(dirPath))
+                    {
+                        Directory.CreateDirectory(dirPath);
+                    }
+
+                    var imgShopCheckList = _dbContext.ImgTickets.Where(c => c.Id == int.Parse(id)).ToList();
+                    foreach (var check in imgShopCheckList)
+                    {
+                        if (check.FileName == fileName)
+                        {
+                            return BadRequest("File Already Exist");
+                        }
+                    }
+
+                    var fileDbEntry = new Entities.ImgTickets()
+                    {
+                        Id = 0,
+                        FileName = fileName,
+                        FilePath = fullPath,
+                        Description = description,
+                        TicketId = int.Parse(id)
+                    };
+
+                    _dbContext.ImgTickets.Add(fileDbEntry);
+                    _dbContext.SaveChanges();
+
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    return Ok("File Uploaded");
+                }
+                else
+                {
+                    return BadRequest("The file seems to be empty");
+                }
+            }
+            return BadRequest("File Error");
+
+        }
+
+        [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
+        [HttpGet("additional/{shopNumber}")]
+        public ActionResult<List<ImgShop>> GetListOfImagesTickets([FromRoute] string ticketId)
+        {
+            var list = _dbContext.ImgTickets.Where(c => c.Id == int.Parse(ticketId)).ToList();
+
+            return Ok(list);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("additional/{shopNumber}/{fileName}")]
+        public ActionResult GetTicketImage([FromRoute] string ticketId, string fileName)
+        {
+
+            var rootPath = Directory.GetCurrentDirectory();
+            var filePath = $"{rootPath}/MEDIA/additional/{ticketId}/{fileName}";
+            var fileExist = System.IO.File.Exists(filePath);
+
+            if (!fileExist)
+            {
+                return NotFound();
+            }
+
+            var fileType = new FileExtensionContentTypeProvider();
+            fileType.TryGetContentType(filePath, out string fileTypeResult);
+
+            var fileContent = System.IO.File.ReadAllBytes(filePath);
+            return File(fileContent, fileTypeResult, fileName);
+        }
+
+        [Authorize(Roles = "Admin, AdvancedUser")]
+        [HttpDelete("/additional/{id}")]
+        public ActionResult<List<ImgShop>> DeleteImageTicket([FromRoute] string imageId)
+        {
+            var idInt = int.Parse(imageId);
+            var file = _dbContext.ImgTickets.Where(c => c.Id == idInt).ToList();
+
+            foreach (var item in file)
+            {
+                if (!System.IO.File.Exists(item.FilePath))
+                {
+                    return BadRequest();
+                }
+                System.IO.File.Delete(item.FilePath);
+                _dbContext.Remove(item);
+                _dbContext.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+        #endregion
 
 
     }
