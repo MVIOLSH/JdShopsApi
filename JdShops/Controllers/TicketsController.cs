@@ -30,7 +30,7 @@ namespace JdShops.Controllers
                 return Ok();
             }
 
-            [HttpPut("{id}")]
+            [HttpPatch("{id}")]
             [Authorize(Roles = "Admin, AdvancedUser")]
             public ActionResult UpdateTicket([FromBody] TicketsDto dto, [FromRoute] int id)
             {
@@ -48,7 +48,7 @@ namespace JdShops.Controllers
 
             [HttpGet("{id}")]
             [Authorize(Roles = "Admin, AdvancedUser")]
-            public ActionResult<TicketsDto> GetById([FromRoute] int id)
+            public ActionResult<IEnumerable<TicketsDto>> GetById([FromRoute] int id)
             {
                 var ticket = _ticketService.GetById(id);
                 return Ok(ticket);

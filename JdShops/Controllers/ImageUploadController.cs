@@ -31,7 +31,7 @@ namespace JdShops.Controllers
         }
 
         //Shop Image Controller Methods
-        #region
+        
         [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
         [HttpPost("{id}")]
         public ActionResult PostImageToShop([FromRoute] string id, [FromForm] IFormFile file, [FromForm] string description)
@@ -89,7 +89,7 @@ namespace JdShops.Controllers
 
         }
 
-        [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
+        [AllowAnonymous]
         [HttpGet("{shopNumber}")]
         public ActionResult<List<ImgShop>> GetListOfImages([FromRoute] string shopNumber)
         {
@@ -141,20 +141,20 @@ namespace JdShops.Controllers
             return Ok();
         }
 
-        #endregion
+        
 
-        #region
+        
         //Additional Address Image Controller Methods
         [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
-        [HttpPost("additional/{id}")]
-        public ActionResult PostImageAddress([FromRoute] string id, [FromForm] IFormFile file, [FromForm] string description)
+        [HttpPost("additional/{shopNumber}/{id}")]
+        public ActionResult PostImageAddress([FromRoute] string shopNumber, [FromRoute] string id, [FromForm] IFormFile file, [FromForm] string description)
         {
             if (file != null && file.Length > 0)
             {
                 var rootPath = Directory.GetCurrentDirectory();
                 var fileName = file.FileName;
-                var fullPath = $"{rootPath}/MEDIA/additional/{id}/{fileName}";
-                var dirPath = $"{rootPath}/MEDIA/additional/{id}/";
+                var fullPath = $"{rootPath}/MEDIA/{shopNumber}/additional/{id}/{fileName}";
+                var dirPath = $"{rootPath}/MEDIA/{shopNumber}/additional/{id}/";
 
                 if (file != null && file.Length > 0)
                 {
@@ -178,7 +178,9 @@ namespace JdShops.Controllers
                         FileName = fileName,
                         FilePath = fullPath,
                         Description = description,
-                        ShopNumber = id
+                        ShopNumber = shopNumber, 
+                        AddAddressId = int.Parse(id)
+                        
                     };
 
                     _dbContext.ImgAdditionalAddresses.Add(fileDbEntry);
@@ -201,23 +203,23 @@ namespace JdShops.Controllers
 
         }
 
-        [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
+        [AllowAnonymous]
         [HttpGet("additional/{shopNumber}")]
         public ActionResult<List<ImgShop>> GetListOfImagesAdditionalAddress([FromRoute] string shopNumber)
         {
-            var list = _dbContext.ImgAdditionalAddresses.Where(c => c.ShopNumber == shopNumber).ToList();
+            var list = _dbContext.ImgAdditionalAddresses.Where(s=> s.ShopNumber == shopNumber).ToList();
 
             return Ok(list);
         }
 
         
         [AllowAnonymous]
-        [HttpGet("additional/{shopNumber}/{fileName}")]
-        public ActionResult GetAdditionalAddressImage([FromRoute] string shopNumber, string fileName)
+        [HttpGet("additional/{shopNumber}/{id}/{fileName}")]
+        public ActionResult GetAdditionalAddressImage([FromRoute] string shopNumber, string id, string fileName)
         {
 
             var rootPath = Directory.GetCurrentDirectory();
-            var filePath = $"{rootPath}/MEDIA/additional/{shopNumber}/{fileName}";
+            var filePath = $"{rootPath}/MEDIA/{shopNumber}/additional/{id}/{fileName}";
             var fileExist = System.IO.File.Exists(filePath);
 
             if (!fileExist)
@@ -233,11 +235,11 @@ namespace JdShops.Controllers
         }
 
         [Authorize(Roles = "Admin, AdvancedUser")]
-        [HttpDelete("/additional/{id}")]
-        public ActionResult<List<ImgShop>> DeleteImageAdditionalAddress([FromRoute] string id)
+        [HttpDelete("additional/{shopNumber}/{id}")]
+        public ActionResult<List<ImgShop>> DeleteImageAdditionalAddress([FromRoute] string shopNumber, string id)
         {
             var idInt = int.Parse(id);
-            var file = _dbContext.ImgAdditionalAddresses.Where(c => c.Id == idInt).ToList();
+            var file = _dbContext.ImgAdditionalAddresses.Where(c => c.Id == idInt && c.ShopNumber == shopNumber).ToList();
 
             foreach (var item in file)
             {
@@ -253,9 +255,9 @@ namespace JdShops.Controllers
             return Ok();
         }
 
-        #endregion
+        
 
-        #region
+       
         //Tickets Image Controller Methods
         [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
         [HttpPost("ticket/{id}")]
@@ -313,8 +315,8 @@ namespace JdShops.Controllers
 
         }
 
-        [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser")]
-        [HttpGet("additional/{shopNumber}")]
+        [AllowAnonymous]
+        [HttpGet("ticket/{ticketId}")]
         public ActionResult<List<ImgShop>> GetListOfImagesTickets([FromRoute] string ticketId)
         {
             var list = _dbContext.ImgTickets.Where(c => c.Id == int.Parse(ticketId)).ToList();
@@ -324,7 +326,7 @@ namespace JdShops.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet("additional/{shopNumber}/{fileName}")]
+        [HttpGet("ticket/{ticketId}/{fileName}")]
         public ActionResult GetTicketImage([FromRoute] string ticketId, string fileName)
         {
 
@@ -345,7 +347,7 @@ namespace JdShops.Controllers
         }
 
         [Authorize(Roles = "Admin, AdvancedUser")]
-        [HttpDelete("/additional/{id}")]
+        [HttpDelete("ticket/{imageId}")]
         public ActionResult<List<ImgShop>> DeleteImageTicket([FromRoute] string imageId)
         {
             var idInt = int.Parse(imageId);
@@ -365,7 +367,7 @@ namespace JdShops.Controllers
             return Ok();
         }
 
-        #endregion
+        
 
 
     }

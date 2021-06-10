@@ -20,8 +20,8 @@ namespace JdShops.Services
     {
         int Create(TicketsDto dto);
         int Update(TicketsDto dto, int id);
-        IEnumerable<TicketsDto> GetAll(string searchPhrase); 
-        TicketsDto GetById(int id);
+        IEnumerable<TicketsDto> GetAll(string searchPhrase);
+        IEnumerable<TicketsDto> GetById(int id);
     }
 
     public class TicketService : ITicketService
@@ -99,18 +99,17 @@ namespace JdShops.Services
         return ticketsDtos;
     }
 
-    public TicketsDto GetById(int id)
+    public IEnumerable<TicketsDto> GetById(int id)
     {
-        var ticket = _dbContext.Tickets.FirstOrDefault(c => c.Id == id);
-        if (ticket is null)
-        {
-            throw new NotFoundException("Ticket Not Found!");
+        var allTickets = _dbContext.Tickets
+            .Include(r => r.CreatedByUser)
+            .Where(r => r.Id == id)
+            .ToList();
+
+        var ticketsDtos = _mapper.Map<List<TicketsDto>>(allTickets);
+        return ticketsDtos;
+
         }
-
-        var result = _mapper.Map<TicketsDto>(ticket);
-        return result;
-
-    }
 
 
     }

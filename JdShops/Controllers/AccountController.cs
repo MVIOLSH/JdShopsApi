@@ -67,8 +67,9 @@ namespace JdShops.Controllers
             return Ok(users);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
+        
         public ActionResult DeleteUser([FromRoute] int id)
         {
             _accountService.DeleteUser(id);

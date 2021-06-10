@@ -5,6 +5,12 @@
       "type": "mssql.azure",
       "connectionId": "JdShopsdbConnectionString",
       "secretStore": "AzureAppSettings"
+    },
+    "identityapp1": {
+      "type": "identityapp",
+      "connectionId": "",
+      "suggestion": "true",
+      "ignored": "true"
     }
   }
 }
