@@ -15,7 +15,7 @@ namespace JdShops.Services
 {
     public interface IAnnouncementsService
         {
-            AnnouncementsDto GetById(int id);
+            IEnumerable<AnnouncementsDto> GetById(int id);
             IEnumerable<AnnouncementsDto> GetAll();
             float Create(AnnouncementsDto dto);
             void AnnouncementDelete(int id);
@@ -55,7 +55,7 @@ namespace JdShops.Services
                     _logger.LogError($"Shop with Shop Number: {id} Update action unsuccessful invoked by");
                     throw new NotFoundException("Shop Not Found!");
                 }
-                announcements.Id = dto.Id;
+                
                 announcements.Content = dto.Content;
                 announcements.Title = dto.Title;
                 announcements.Type = dto.Type;
@@ -87,14 +87,14 @@ namespace JdShops.Services
 
             }
             /** Method to list specified by shop number shop details records from both tables of DB */
-            public AnnouncementsDto GetById(int id)
+            public IEnumerable<AnnouncementsDto> GetById(int id)
             {
-                var announcement = _dbContext
-                 .Announcements
-                 .FirstOrDefault(r => r.Id == id);
+            var announcement = _dbContext
+                .Announcements.Where(r=> r.Id == id)
+                .ToList();
 
-                if (announcement is null) throw new NotFoundException("Shop Not Found!");
-                var result = _mapper.Map<AnnouncementsDto>(announcement);
+            if (announcement is null) throw new NotFoundException("Shop Not Found!");
+                var result = _mapper.Map<List<AnnouncementsDto>>(announcement);
                 return result;
             }
             /** Method to list all the shops details records from both tables of DB */

@@ -90,9 +90,9 @@ namespace JdShops.Services
             .Where(r=> searchPhrase== null || 
                        (r.ShopNumber.ToLower() == searchPhrase.ToLower() 
                         || r.Status.ToLower()==searchPhrase.ToLower() 
-                        || r.TypeOfRequest.ToLower() == searchPhrase.ToLower() 
-                        || r.UserFname.ToLower() == searchPhrase.ToLower() 
-                        ||r.UserLname.ToLower() == searchPhrase.ToLower() ))
+                        || r.TypeOfRequest.ToLower().Contains(searchPhrase.ToLower()) 
+                        || r.UserFname.ToLower().Contains(searchPhrase.ToLower()) 
+                        ||r.UserLname.ToLower().Contains(searchPhrase.ToLower())))
             .ToList();
 
         var ticketsDtos = _mapper.Map<List<TicketsDto>>(allTickets);

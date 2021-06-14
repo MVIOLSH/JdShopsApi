@@ -23,7 +23,7 @@ namespace JdShops.Controllers
                 _announcementsService = announcementsService;
             }
 
-            [HttpPut("{id}")]
+            [HttpPatch("{id}")]
             [Authorize(Roles = "Admin, AdvancedUser")]
 
             public ActionResult Update([FromBody] AnnouncementsDto dto, [FromRoute] int id)
@@ -58,7 +58,7 @@ namespace JdShops.Controllers
 
             [HttpGet("{id}")]
             [Authorize(Roles = "Admin, AdvancedUser, VerifiedUser, DummyUser")]
-            public ActionResult<AnnouncementsDto> Get([FromRoute] int id)
+            public ActionResult<IEnumerable<AnnouncementsDto>> Get([FromRoute] int id)
             {
                 var shop = _announcementsService.GetById(id);
                 return Ok(shop);

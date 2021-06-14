@@ -48,11 +48,15 @@ namespace JdShops.Controllers
 
             [HttpGet("{id}")]
             [Authorize(Roles = "Admin, AdvancedUser")]
-            public ActionResult<IEnumerable<TicketsDto>> GetById([FromRoute] int id)
+            public ActionResult<IEnumerable<TicketsDto>> GetById([FromRoute] int id )
             {
                 var ticket = _ticketService.GetById(id);
                 return Ok(ticket);
             }
+
+
+
+
 
 
         }

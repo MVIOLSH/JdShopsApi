@@ -154,9 +154,9 @@ namespace JdShops.Services
             var users = _dbContext.Users
                 .Include(u => u.Role)
                 .Where(r=> searchPhrase == null 
-                           ||(r.Email.ToLower() ==searchPhrase.ToLower()
-                           || r.Fname.ToLower() == searchPhrase.ToLower()
-                           || r.Lname.ToLower() == searchPhrase.ToLower()))
+                           ||(r.Email.ToLower().Contains(searchPhrase.ToLower())
+                           || r.Fname.ToLower().Contains(searchPhrase.ToLower())
+                           || r.Lname.ToLower().Contains(searchPhrase.ToLower())))
                 .ToList();
             var UsersDto = _mapper.Map<List<UserDto>>(users);
             
